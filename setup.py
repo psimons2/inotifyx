@@ -3,8 +3,13 @@
 # Author: Forest Bond
 # This file is in the public domain.
 
-import os, sys, subprocess
+import os, sys
 from distutils.core import Extension
+
+if sys.version_info[0] >= 3:
+    from subprocess import getstatusoutput
+else:
+    from commands import getstatusoutput
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'modules'))
@@ -22,7 +27,7 @@ def get_version(release_file):
         finally:
             f.close()
     except (IOError, OSError):
-        status, output = subprocess.getstatusoutput('bzr revno')
+        status, output = getstatusoutput('bzr revno')
         if status == 0:
             return 'bzr%s' % output.strip()
     return 'unknown'

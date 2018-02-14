@@ -2,6 +2,7 @@
 # This file is in the public domain.
 
 
+from __future__ import print_function
 
 import os, sys, shutil
 from tempfile import mkdtemp

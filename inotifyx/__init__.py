@@ -33,6 +33,7 @@ Generally, usage is as follows:
 ... finally:
 ...     os.close(fd)
 '''
+from __future__ import print_function
 
 import os, select
 
