@@ -46,4 +46,4 @@ def main(**kwargs):
 
 def print_names(test_names = None):
     from tests.manager import manager
-    print '\n'.join(manager.get_names(test_names))
+    print('\n'.join(manager.get_names(test_names)))

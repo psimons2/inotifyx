@@ -45,6 +45,9 @@
 #define EVENT_SIZE (sizeof (struct inotify_event))
 #define BUF_LEN (1024 * (EVENT_SIZE + 16))
 
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3
+#endif
 
 static PyObject * inotifyx_init(PyObject *self, PyObject *args) {
     int fd;
@@ -270,7 +273,25 @@ static PyMethodDef InotifyMethods[] = {
   {NULL, NULL, 0, NULL}
 };
 
+#ifdef IS_PY3
+static struct PyModuleDef inotifybinding =
+{
+  PyModuleDef_HEAD_INIT,
+  "inotifyx.binding",
+  (
+    "Low-level interface to inotify.  Do not use this module directly.\n"
+    "Instead, use the inotifyx module."
+  ),
+  -1,
+  InotifyMethods
+};
 
+PyMODINIT_FUNC PyInit_binding(void) {
+    PyObject *module = PyModule_Create(&inotifybinding);
+
+     if (module == NULL)
+        return NULL;
+#else
 PyMODINIT_FUNC initbinding(void) {
     PyObject* module = Py_InitModule3(
       "inotifyx.binding",
@@ -283,6 +304,7 @@ PyMODINIT_FUNC initbinding(void) {
 
     if (module == NULL)
         return;
+#endif
     
     PyModule_AddIntConstant(module, "IN_ACCESS", IN_ACCESS);
     PyModule_AddIntConstant(module, "IN_MODIFY", IN_MODIFY);
@@ -307,4 +329,7 @@ PyMODINIT_FUNC initbinding(void) {
     PyModule_AddIntConstant(module, "IN_ISDIR", IN_ISDIR);
     PyModule_AddIntConstant(module, "IN_ONESHOT", IN_ONESHOT);
     PyModule_AddIntConstant(module, "IN_ALL_EVENTS", IN_ALL_EVENTS);
+#ifdef IS_PY3
+    return module;
+#endif
 }

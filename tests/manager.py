@@ -77,7 +77,7 @@ class TestManager(object):
             import coverage as _coverage
 
             if int(_coverage.__version__.split('.')[0]) < 3:
-                print >>sys.stderr, (
+                sys.stderr.write(
                   'warning: coverage versions < 3 '
                   'are known to produce imperfect results'
                 )
@@ -94,7 +94,7 @@ class TestManager(object):
             for test in self.tests:
                 if self.should_run_test(test, test_names):
                     if print_only:
-                        print test.id()
+                        print(test.id())
                     else:
                         suite.addTest(test)
 

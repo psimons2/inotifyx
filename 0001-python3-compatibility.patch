@@ -1,0 +1,147 @@
+From 6273caed4b42acad700560d30ddad1daf382dde5 Mon Sep 17 00:00:00 2001
+From: Brian Russell <brussell@brocade.com>
+Date: Fri, 24 Feb 2017 17:01:41 +0000
+Subject: [PATCH 1/4] python3 compatibility
+
+Automated 2to3 changes plus manual fixup to make the code
+python3 compatible.
+---
+ inotifyx/__init__.py |  6 +++---
+ setup.py             |  4 ++--
+ setuplib.py          | 12 ++++++------
+ tests/__init__.py    |  2 +-
+ tests/manager.py     |  4 ++--
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/inotifyx/__init__.py b/inotifyx/__init__.py
+index df10385..fcfaa04 100644
+--- a/inotifyx/__init__.py
++++ b/inotifyx/__init__.py
+@@ -95,7 +95,7 @@ class InotifyEvent(object):
+         '''
+ 
+         parts = []
+-        for name, value in constants.items():
++        for name, value in list(constants.items()):
+             if self.mask & value:
+                 parts.append(name)
+         if parts:
+@@ -124,7 +124,7 @@ if __name__ == '__main__':
+     import sys
+ 
+     if len(sys.argv) == 1:
+-        print >>sys.stderr, 'usage: inotify path [path ...]'
++        sys.stderr.write('usage: inotify path [path ...]')
+         sys.exit(1)
+ 
+     paths = sys.argv[1:]
+@@ -146,7 +146,7 @@ if __name__ == '__main__':
+                     parts = [event.get_mask_description()]
+                     if event.name:
+                         parts.append(event.name)
+-                    print '%s: %s' % (path, ' '.join(parts))
++                    print('%s: %s' % (path, ' '.join(parts)))
+         except KeyboardInterrupt:
+             pass
+ 
+diff --git a/setup.py b/setup.py
+index 5564aba..bbd64c1 100755
+--- a/setup.py
++++ b/setup.py
+@@ -3,7 +3,7 @@
+ # Author: Forest Bond <forest.bond@outpostembedded.com>
+ # This file is in the public domain.
+ 
+-import os, sys, commands
++import os, sys, subprocess
+ from distutils.core import Extension
+ 
+ 
+@@ -22,7 +22,7 @@ def get_version(release_file):
+         finally:
+             f.close()
+     except (IOError, OSError):
+-        status, output = commands.getstatusoutput('bzr revno')
++        status, output = subprocess.getstatusoutput('bzr revno')
+         if status == 0:
+             return 'bzr%s' % output.strip()
+     return 'unknown'
+diff --git a/setuplib.py b/setuplib.py
+index cbfd67b..bbd6c74 100644
+--- a/setuplib.py
++++ b/setuplib.py
+@@ -1,7 +1,7 @@
+ # Author: Forest Bond <forest.bond@outpostembedded.com>
+ # This file is in the public domain.
+ 
+-from __future__ import with_statement
++
+ 
+ import os, sys, shutil
+ from tempfile import mkdtemp
+@@ -216,8 +216,8 @@ class _DistinfoMixin:
+ 
+     def _prepare_distinfo_string(self, value):
+         if isinstance(value, str):
+-            value = unicode(value)
+-        return unicode(repr(value)).encode('utf-8')
++            value = str(value)
++        return str(repr(value)).encode('utf-8')
+ 
+     def _write_distinfo_module(self, outfile, distinfo = (), imports = ()):
+         distinfo = list(distinfo)
+@@ -236,7 +236,7 @@ class _DistinfoMixin:
+             log.info(' %s = %s', k, v)
+ 
+         if not self.dry_run:
+-            with open(outfile, 'wb') as f:
++            with open(outfile, 'w') as f:
+                 f.write('# coding: utf-8\n')
+                 f.write('\n')
+                 for modname in imports:
+@@ -359,8 +359,8 @@ class install_data(_install_data):
+ 
+     def _gen_data_files(self, base_dir, data_files):
+         for arg in data_files:
+-            print arg
+-            if isinstance(arg, basestring):
++            print(arg)
++            if isinstance(arg, str):
+                 yield (base_dir, [arg])
+             else:
+                 subdir, filenames = arg
+diff --git a/tests/__init__.py b/tests/__init__.py
+index 4c2d77e..3537ebb 100644
+--- a/tests/__init__.py
++++ b/tests/__init__.py
+@@ -46,4 +46,4 @@ def main(**kwargs):
+ 
+ def print_names(test_names = None):
+     from tests.manager import manager
+-    print '\n'.join(manager.get_names(test_names))
++    print('\n'.join(manager.get_names(test_names)))
+diff --git a/tests/manager.py b/tests/manager.py
+index 804ec12..a05f156 100644
+--- a/tests/manager.py
++++ b/tests/manager.py
+@@ -77,7 +77,7 @@ class TestManager(object):
+             import coverage as _coverage
+ 
+             if int(_coverage.__version__.split('.')[0]) < 3:
+-                print >>sys.stderr, (
++                sys.stderr.write(
+                   'warning: coverage versions < 3 '
+                   'are known to produce imperfect results'
+                 )
+@@ -94,7 +94,7 @@ class TestManager(object):
+             for test in self.tests:
+                 if self.should_run_test(test, test_names):
+                     if print_only:
+-                        print test.id()
++                        print(test.id())
+                     else:
+                         suite.addTest(test)
+ 
+-- 
+2.1.4
+
