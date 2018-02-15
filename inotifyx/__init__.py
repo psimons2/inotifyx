@@ -37,8 +37,8 @@ from __future__ import print_function
 
 import os, select
 
-from inotifyx import binding
-from inotifyx.distinfo import version as __version__
+from . import binding
+from .distinfo import version as __version__
 
 
 constants = {}
