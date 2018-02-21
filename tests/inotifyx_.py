@@ -83,5 +83,8 @@ class TestInotifyx(TestCase):
         from inotifyx import distinfo
         self.assertEqual(inotifyx.__version__, distinfo.version)
 
+    def test_export_buf_len(self):
+        self.assertTrue(getattr(inotifyx, 'BUF_LEN', 0) > 0)
+
 
 manager.add_test_case_class(TestInotifyx)
