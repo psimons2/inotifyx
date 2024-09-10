@@ -5,6 +5,13 @@ inotifyx Release Notes
 .. contents::
 
 
+inotifyx 0.2.3 2024-09-10
+=========================
+
+ * Converted inotifyx into pure python.
+  (Patrik Simons)
+
+
 inotifyx 0.2.2 2014-08-25
 =========================
 

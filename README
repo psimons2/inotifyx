@@ -11,10 +11,3 @@ You can also test out inotifyx easily.  The following command will print events
 for /tmp:
 
   python -m inotifyx /tmp
-
-Tests can be run via setup.py:
-
-  ./setup.py test
-
-Note that the module must be built and installed for tests to run correctly.
-In the future, this requirement will be lifted.
